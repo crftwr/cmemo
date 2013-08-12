@@ -182,8 +182,6 @@ class Desktop(ckit.Window):
         fd.write(data)
         fd.close()
         
-        print(fullpath)
-
         # テキストエディタを開く
         if edit:
             self.editTextFile(fullpath)
@@ -346,7 +344,7 @@ class Desktop(ckit.Window):
             if len(items)==0:
                 return
 
-            items.sort( key = lambda item : item.getTimeStamp() )
+            items.sort( key = lambda item : item.getTimeStamp(), reverse=True )
 
             def build_item(memowindow):
                 return ( memowindow.getLeadingText(1000), memowindow )
