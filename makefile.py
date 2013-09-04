@@ -63,7 +63,6 @@ DIST_FILES = [
     "cmemo/theme/black",
     "cmemo/license",
     "cmemo/doc",
-    "cmemo/src.zip",
     "cmemo/dict/.keepme",
     "cmemo/extension/.keepme",
     ]
@@ -75,7 +74,7 @@ def all():
 def exe():
     subprocess.call( [ PYTHON, "setup.py", "build" ] )
 
-    if 1:
+    if 0:
         rmtree( DIST_SRC_DIR )
         makedirs( DIST_SRC_DIR )
         os.chdir(DIST_SRC_DIR)
