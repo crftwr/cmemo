@@ -202,6 +202,13 @@ class Desktop(ckit.Window):
         txt_fullpath = os.path.join( data_path, name+".txt" )
         cfg_fullpath = os.path.join( data_path, name+".cfg" )
         bak_fullpath = os.path.join( backup_path, name+".txt" )
+
+        # 既にバックアップが存在していたら削除する。
+        # テキストエディタで開いたまま、メモを削除し、テキストエディタから保存した場合に、
+        # ２重に削除されるケースがありえる。
+        if os.path.exists(bak_fullpath):
+            os.unlink(bak_fullpath)
+
         if os.path.exists(txt_fullpath):
             os.rename( txt_fullpath, bak_fullpath )
         if os.path.exists(cfg_fullpath):
