@@ -19,6 +19,13 @@ import cmemo_resource
 import cmemo_colortable
 import cmemo_misc
 
+## @addtogroup desktop
+## @{
+
+#--------------------------------------------------------------------
+
+## 複数のメモウインドウの管理を行うクラス
+#
 class Desktop(ckit.Window):
     
     def __init__( self, config_filename, debug, profile ):
@@ -385,4 +392,6 @@ class Desktop(ckit.Window):
         
         finally:
             self.releaseUserInputOwnership()
+
+## @} desktop
 
