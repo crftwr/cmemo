@@ -148,7 +148,7 @@ class Desktop(ckit.Window):
         fullpath = os.path.abspath(self.config_filename)
     
         if callable(self.editor):
-            main_window.editor(fullpath)
+            self.editor(fullpath)
         else:
             pyauto.shellExecute( None, self.editor, '"%s"' % fullpath, "" )
 
