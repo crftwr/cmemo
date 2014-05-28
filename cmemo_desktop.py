@@ -26,11 +26,11 @@ import cmemo_misc
 
 ## 複数のメモウインドウの管理を行うクラス
 #
-class Desktop(ckit.Window):
+class Desktop(ckit.TextWindow):
     
     def __init__( self, config_filename, debug, profile ):
 
-        ckit.Window.__init__(
+        ckit.TextWindow.__init__(
             self,
             x = 0,
             y = 0,
@@ -81,7 +81,7 @@ class Desktop(ckit.Window):
 
         self.console_window.destroy()
 
-        ckit.Window.destroy(self)
+        ckit.TextWindow.destroy(self)
 
     def _onEndSession(self):
         self.saveState()
@@ -290,7 +290,7 @@ class Desktop(ckit.Window):
 
     def setMenuHotKey( self, vk, mod ):
         self.killHotKey( self._popupHotKeyMenu )
-        ckit.Window.setHotKey( self, vk, mod, self._popupHotKeyMenu )
+        ckit.TextWindow.setHotKey( self, vk, mod, self._popupHotKeyMenu )
 
     def _onTimerCheckFileAll(self):
         data_path = os.path.join( self.data_path, 'data' )

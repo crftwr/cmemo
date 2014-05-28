@@ -53,7 +53,7 @@ class Log:
 #--------------------------------------------------------------------
 # コンソールウインドウ
 
-class ConsoleWindow(ckit.Window):
+class ConsoleWindow(ckit.TextWindow):
     
     def __init__( self, keymap, debug=False ):
     
@@ -61,7 +61,7 @@ class ConsoleWindow(ckit.Window):
         
         self.loadState()
 
-        ckit.Window.__init__(
+        ckit.TextWindow.__init__(
             self,
             x = self.window_normal_x,
             y = self.window_normal_y,

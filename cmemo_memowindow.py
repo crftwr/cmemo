@@ -17,7 +17,7 @@ import cmemo_resource
 
 ## メモウインドウ
 #
-class MemoWindow( ckit.Window ):
+class MemoWindow( ckit.TextWindow ):
 
     MODE_NORMAL = 0
     MODE_LINE = 1
@@ -48,7 +48,7 @@ class MemoWindow( ckit.Window ):
         except:
             new_memo = True
     
-        ckit.Window.__init__(
+        ckit.TextWindow.__init__(
             self,
             x=self.setting["x"],
             y=self.setting["y"],
@@ -108,7 +108,7 @@ class MemoWindow( ckit.Window ):
             MemoWindow.img_active = ckit.createThemeImage('active.png')
 
         self.plane_size = ( 13, 13 )
-        self.plane_active = ckit.Plane( self, (0,0), self.plane_size, 0 )
+        self.plane_active = ckit.ImagePlane( self, (0,0), self.plane_size, 0 )
         self.plane_active.setImage(MemoWindow.img_active)
         self.plane_active.show(False)
         
@@ -128,7 +128,7 @@ class MemoWindow( ckit.Window ):
 
         self.killTimer( self.onTimerCheckFile )
 
-        ckit.Window.destroy(self)
+        ckit.TextWindow.destroy(self)
 
     ## 設定を読み込む
     #
@@ -256,7 +256,7 @@ class MemoWindow( ckit.Window ):
             else:
                 self.putString( 0, y+i, width, 1, attribute_normal, " " * width )
 
-        self.plane_active.setPos( ( client_rect[2]-13, client_rect[3]-13 ) )
+        self.plane_active.setPosition( ( client_rect[2]-13, client_rect[3]-13 ) )
 
     def load( self, adjust_size ):
     
