@@ -40,8 +40,8 @@
     Python Programming Language
         http://www.python.org/
 
-    Python Imaging Library
-        http://www.pythonware.com/products/pil/
+    Pillow
+        https://github.com/python-imaging/Pillow
 
     C/Migemo
         http://www.kaoriya.net/
@@ -199,24 +199,9 @@
 同期機能について
 =================
 
-    (書き換え予定)
+    (加筆予定)
 
     cmemoでは、DropBoxを使って、複数のPC間でメモを同期することが出来ます。
-
-    cmemoの同期機能を使用する前に、ウェブブラウザ上で GoogleDocs が使えることを
-    確認してください。
-
-    http://docs.google.com/
-
-    メモウインドウを右クリックして、[同期対象] にチェックマークを付けた上で、
-    タスクトレイアイコンのメニューの [同期の実行] を選択すると、
-    ログインウインドウが表示されます。
-
-        .. image:: image/login.png
-
-    Googleのアカウントのメールアドレスとパスワードを入力すると、
-    同期処理が実行されます。
-
 
 
 Migemoを使う
@@ -241,15 +226,6 @@ Migemoを使う
     辞書ファイルは、C/Migemo のバイナリパッケージに含まれています。
 
     http://cmigemo.googlecode.com/files/cmigemo-default-win64-20110227.zip
-
-
-APIリファレンス
-================
-
-    cmemo が提供しているのクラスや関数の詳細については、
-    APIリファレンス_ を参照してください。
-
-    .. _APIリファレンス: reference/index.html
 
 
 更新履歴

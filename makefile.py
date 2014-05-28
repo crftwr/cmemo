@@ -16,7 +16,7 @@ DIST_SRC_DIR = "dist/src"
 VERSION = cmemo_resource.cmemo_version.replace(".","").replace(" ","")
 ARCHIVE_NAME = "cmemo_%s.zip" % VERSION
 
-PYTHON_DIR = "c:/python33"
+PYTHON_DIR = "c:/python34"
 PYTHON = PYTHON_DIR + "/python.exe"
 SVN_DIR = "c:/Program Files/TortoiseSVN/bin"
 DOXYGEN_DIR = "c:/Program Files/doxygen"
@@ -56,7 +56,7 @@ def createZip( zip_filename, items ):
 DIST_FILES = [
     "cmemo/cmemo.exe",
     "cmemo/lib",
-    "cmemo/python33.dll",
+    "cmemo/python34.dll",
     "cmemo/library.zip",
     "cmemo/_config.py",
     "cmemo/readme.txt",
