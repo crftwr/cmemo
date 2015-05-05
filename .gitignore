@@ -1,0 +1,11 @@
+__pycache__/
+doc/html/
+dist/
+cmemo_native/Release/
+doc/obj/
+cmemo_native.exp
+cmemo_native.lib
+cmemo_native.pdb
+cmemo_native/cmemo_native.sdf
+cmemo_native/cmemo_native.suo
+cmemo_native/cmemo_native.vcxproj.user
