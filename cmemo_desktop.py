@@ -171,8 +171,13 @@ class Desktop(ckit.TextWindow):
 
     def newMemo( self, data, edit=False ):
 
-        # ユニークなID
-        name = "memo_" + uuid.uuid1().hex[:8]
+        while True:
+
+            # ユニークなID
+            name = "memo_" + uuid.uuid1().hex[:8]
+
+            # 既存のメモとの重複を念のためチェック
+            if name not in self.memowindow_table: break
 
         # utf-8 / CR-LF に変換
         utf8_bom = b"\xEF\xBB\xBF"
@@ -181,9 +186,11 @@ class Desktop(ckit.TextWindow):
         data = data.replace("\n","\r\n")
         data = data.encode( encoding="utf-8" )
 
-        # ファイルの新規作成
+        # テキストファイルのパス
         data_path = os.path.join( self.data_path, 'data' )
         fullpath = os.path.join( data_path, name+".txt" )
+
+        # ファイルの新規作成
         fd = open( fullpath, "wb" )
         fd.write(utf8_bom)
         fd.write(data)
@@ -194,6 +201,7 @@ class Desktop(ckit.TextWindow):
             self.editTextFile(fullpath)
                 
         new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
+        if name in self.memowindow_table : raise KeyError("duplicate memo : " + memo)
         self.memowindow_table[name] = new_memowindow
     
     def deleteMemo(self,name):
@@ -228,6 +236,7 @@ class Desktop(ckit.TextWindow):
             name, ext = os.path.splitext(filename)
             if ext.lower()==".txt":
                 new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
+                if name in self.memowindow_table : raise KeyError("duplicate memo : " + memo)
                 self.memowindow_table[name] = new_memowindow
 
     def findSpace( self, size ):
@@ -302,6 +311,7 @@ class Desktop(ckit.TextWindow):
                     pass
                 else:
                     new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
+                    if name in self.memowindow_table : raise KeyError("duplicate memo : " + memo)
                     self.memowindow_table[name] = new_memowindow
 
     def _onTimerFlushIniFile(self):
