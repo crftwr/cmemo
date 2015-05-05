@@ -1,7 +1,7 @@
 ﻿
 cmemo_appname = "CraftMemo"
 cmemo_dirname = "CraftMemo"
-cmemo_version = "1.22"
+cmemo_version = "1.23"
 
 _startup_string_fmt = """\
 %s version %s:

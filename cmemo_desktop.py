@@ -386,7 +386,6 @@ class Desktop(ckit.TextWindow):
 
             if result<0 : return
 
-            items[result][1].updateTimeStamp()
             items[result][1].activate()
             items[result][1].visualBell()
         
