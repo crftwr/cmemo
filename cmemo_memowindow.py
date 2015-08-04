@@ -371,7 +371,7 @@ class MemoWindow( ckit.TextWindow ):
             origin = origin
             )
 
-        self.show(True)
+        self.show(True,False)
 
         self.paint()
 

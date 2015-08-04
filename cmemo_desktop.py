@@ -52,7 +52,9 @@ class Desktop(ckit.TextWindow):
         self.profile = profile                  # プロファイルモード
         
         self.memowindow_table = {}
-    
+        
+        self.creating_memowindow = False
+
         self.color_choose_table = ( (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0) )
         self.default_memo_color = (255,255,192)
         
@@ -167,11 +169,9 @@ class Desktop(ckit.TextWindow):
                 if not os.path.exists(dirname):
                     os.mkdir(dirname)
 
-        self.loadMemos()
+        self.createMemoWindowForNewMemoFile()
 
     def newMemo( self, data, edit=False ):
-    
-        print( "newMemo : enter : thread-id = %d" % threading.get_ident() )
 
         while True:
 
@@ -201,18 +201,12 @@ class Desktop(ckit.TextWindow):
         # テキストエディタを開く
         if edit:
             self.editTextFile(fullpath)
-                
-        new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
-        if name in self.memowindow_table : raise KeyError("duplicate memo : " + name)
-        self.memowindow_table[name] = new_memowindow
-
-        print( "newMemo : leave : thread-id = %d" % threading.get_ident() )
+        
+        self.createMemoWindowForNewMemoFile()
 
     
     def deleteMemo(self,name):
         
-        print( "deleteMemo : enter : thread-id = %d" % threading.get_ident() )
-
         # ウインドウの削除
         memowindow = self.memowindow_table[name]
         memowindow.destroy()
@@ -235,23 +229,6 @@ class Desktop(ckit.TextWindow):
             os.rename( txt_fullpath, bak_fullpath )
         if os.path.exists(cfg_fullpath):
             os.unlink(cfg_fullpath)
-
-        print( "deleteMemo : leave : thread-id = %d" % threading.get_ident() )
-    
-    def loadMemos(self):
-
-        print( "loadMemos : enter : thread-id = %d" % threading.get_ident() )
-
-        data_path = os.path.join( self.data_path, 'data' )
-        filename_list = os.listdir(data_path)
-        for filename in filename_list:
-            name, ext = os.path.splitext(filename)
-            if ext.lower()==".txt":
-                new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
-                if name in self.memowindow_table : raise KeyError("duplicate memo : " + name)
-                self.memowindow_table[name] = new_memowindow
-
-        print( "loadMemos : leave : thread-id = %d" % threading.get_ident() )
 
     def findSpace( self, size ):
     
@@ -289,8 +266,6 @@ class Desktop(ckit.TextWindow):
             
     def _popupHotKeyMenu(self):
         
-        print( "_popupHotKeyMenu : enter" )
-        
         if not self.acquireUserInputOwnership(False) : return
         try:
             menu_items = []
@@ -313,13 +288,11 @@ class Desktop(ckit.TextWindow):
         finally:
             self.releaseUserInputOwnership()
 
-        print( "_popupHotKeyMenu : leave" )
-
     def setMenuHotKey( self, vk, mod ):
         self.killHotKey( self._popupHotKeyMenu )
         ckit.TextWindow.setHotKey( self, vk, mod, self._popupHotKeyMenu )
 
-    def _onTimerCheckFileAll(self):
+    def createMemoWindowForNewMemoFile(self):
         data_path = os.path.join( self.data_path, 'data' )
         filename_list = os.listdir(data_path)
         for filename in filename_list:
@@ -328,14 +301,20 @@ class Desktop(ckit.TextWindow):
                 if name in self.memowindow_table:
                     pass
                 else:
+                    self.creating_memowindow = True
+                    try:
+                        new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
+                        if name in self.memowindow_table : raise KeyError("duplicate memo : " + name)
+                        self.memowindow_table[name] = new_memowindow
+                    finally:
+                        self.creating_memowindow = False
 
-                    print( "_onTimerCheckFileAll : enter : thread-id = %d" % threading.get_ident() )
+    def _onTimerCheckFileAll(self):
 
-                    new_memowindow = cmemo_memowindow.MemoWindow( self, name, self.default_memo_color )
-                    if name in self.memowindow_table : raise KeyError("duplicate memo : " + name)
-                    self.memowindow_table[name] = new_memowindow
+        # MemoWindow の作成中にタイマーが発火してしまうことがあるため、ここでチェック
+        if self.creating_memowindow : return
 
-                    print( "_onTimerCheckFileAll : leave : thread-id = %d" % threading.get_ident() )
+        self.createMemoWindowForNewMemoFile()
 
     def _onTimerFlushIniFile(self):
         self.saveState()
