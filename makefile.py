@@ -16,7 +16,7 @@ DIST_SRC_DIR = "dist/src"
 VERSION = cmemo_resource.cmemo_version.replace(".","").replace(" ","")
 ARCHIVE_NAME = "cmemo_%s.zip" % VERSION
 
-PYTHON_DIR = "c:/python34"
+PYTHON_DIR = "c:/Python34"
 PYTHON = PYTHON_DIR + "/python.exe"
 SVN_DIR = "c:/Program Files/TortoiseSVN/bin"
 DOXYGEN_DIR = "c:/Program Files/doxygen"
