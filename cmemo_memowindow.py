@@ -22,6 +22,8 @@ class MemoWindow( ckit.TextWindow ):
     MODE_NORMAL = 0
     MODE_LINE = 1
     
+    line_mode_mark = '► '
+    
     img_active = None
 
     def __init__( self, desktop, name, color ):
@@ -251,8 +253,14 @@ class MemoWindow( ckit.TextWindow ):
 
         for i in range(height):
             if i < len(self.lines):
+                
+                line = self.lines[i]
+            
+                if height==1 and height<len(self.lines) and i==0:
+                    line = MemoWindow.line_mode_mark + line
+                
                 self.putString( 0, y+i, width, 1, attribute_normal, " " * width )
-                self.putString( 0, y+i, width, 1, attribute_normal, self.lines[i] )
+                self.putString( 0, y+i, width, 1, attribute_normal, line )
             else:
                 self.putString( 0, y+i, width, 1, attribute_normal, " " * width )
 
