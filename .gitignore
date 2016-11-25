@@ -12,3 +12,8 @@ cmemo_native/cmemo_native.vcxproj.user
 tags
 cmemo_native/cmemo_native.v12.suo
 cmemo_native/Debug/
+build/
+library.zip
+Debug/
+Release/
+lib/
