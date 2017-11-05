@@ -18,3 +18,15 @@ Debug/
 Release/
 lib/
 cmemo_native.pyd
+python36.dll
+cmemo_d.pdb
+cmemo_d.exe
+cmemo.vcxproj.user
+cmemo.sdf
+cmemo.pdb
+cmemo.ipdb
+cmemo.iobj
+cmemo.exe
+cmemo.aps
+cmemo_d.ilk
+.vs/
