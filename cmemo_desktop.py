@@ -92,6 +92,19 @@ class Desktop(ckit.TextWindow):
     def enableDebug( self, enable ):
         self.debug = enable
 
+    ## フォントを設定する
+    #
+    #  @param self  -
+    #  @param name  フォント名
+    #  @param size  フォントサイズ
+    #
+    def setFont( self, name, size ):
+        ckit.TextWindow.setFont( self, name, size )
+        self.console_window.setFontFromTextWindow(self)
+
+        for memowindow in self.memowindow_table.values():
+            memowindow.setFontFromTextWindow(self)
+
     ## ユーザ入力権を獲得する
     #
     #  @param self      -
@@ -386,7 +399,7 @@ class Desktop(ckit.TextWindow):
                 return ""
 
             pos = pyauto.Input.getCursorPos()
-            list_window = cmemo_listwindow.ListWindow( pos[0], pos[1], 5, 1, max_width, 16, 0, False, "メモリスト", items, initial_select=0, keydown_hook=onKeyDown, onekey_search=False, statusbar_handler=onStatusMessage )
+            list_window = cmemo_listwindow.ListWindow( pos[0], pos[1], 5, 1, max_width, 16, self, False, "メモリスト", items, initial_select=0, keydown_hook=onKeyDown, onekey_search=False, statusbar_handler=onStatusMessage )
             cmemo_misc.adjustWindowPosition( list_window, pos )
             list_window.show(True)
             self.enable(False)

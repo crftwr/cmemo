@@ -2,6 +2,15 @@
 更新履歴
 =========
 
+    **1.27**
+
+        - Python35 から Python38 に移行
+
+        - desktop.setFont で、メモウインドウを含めたフォントの変更ができるように。
+
+        - configure_ListWindow で、リストウインドウのカスタマイズができるように。
+
+
     **1.26**
 
         - Python34 から Python35 に移行

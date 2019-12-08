@@ -55,7 +55,7 @@ class Log:
 
 class ConsoleWindow(ckit.TextWindow):
     
-    def __init__( self, keymap, debug=False ):
+    def __init__( self, desktop, debug=False ):
     
         self.initialized = False
         
@@ -67,7 +67,7 @@ class ConsoleWindow(ckit.TextWindow):
             y = self.window_normal_y,
             width = self.window_normal_width,
             height = self.window_normal_height,
-            font_size = 12,
+            parent_window=desktop,
             bg_color = (0,0,0),
             border_size = 2,
             title_bar = True,
@@ -408,6 +408,13 @@ class ConsoleWindow(ckit.TextWindow):
     def unregisterStdio(self):
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
+
+    #--------------------------------------------------------------------------
+    
+    def setFontFromTextWindow( self, window ):
+        ckit.TextWindow.setFontFromTextWindow( self, window )
+        window_rect = self.getWindowRect()
+        self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
 
     #--------------------------------------------------------------------------
     # 描画

@@ -57,6 +57,7 @@ class MemoWindow( ckit.TextWindow ):
             width=self.setting["w"],
             height=self.setting["h"],
             origin= ORIGIN_X_LEFT | ORIGIN_Y_TOP,
+            parent_window=desktop,
             show = False,
             resizable = False,
             title_bar = False,
@@ -237,6 +238,15 @@ class MemoWindow( ckit.TextWindow ):
                 return HTBOTTOM
         
         return HTCLIENT
+
+    #--------------------------------------------------------------------------
+    
+    def setFontFromTextWindow( self, window ):
+        ckit.TextWindow.setFontFromTextWindow( self, window )
+        window_rect = self.getWindowRect()
+        self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
+
+    #--------------------------------------------------------------------------
 
     def paint(self):
 

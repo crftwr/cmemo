@@ -124,7 +124,7 @@ class ListWindow( ckit.TextWindow ):
         self.keymap[ "Escape" ] = self.command.Cancel
         if not self.onekey_search:
             self.keymap[ "F" ] = self.command.IncrementalSearch
-        #ckit.callConfigFunc("configure_ListWindow",self)
+        ckit.callConfigFunc("configure_ListWindow",self)
 
     def executeCommand( self, name, info ):
 

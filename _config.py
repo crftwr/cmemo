@@ -9,7 +9,10 @@ def configure(desktop):
 
     # メニューを出すためのホットキーの設定
     desktop.setMenuHotKey( ord('P'), MODKEY_CTRL|MODKEY_SHIFT )
-    
+
+    # フォント設定
+    desktop.setFont( "MS Gothic", 12 )
+
     # デフォルトのメモウインドウの色の設定
     desktop.default_memo_color = ( 255, 255, 128 )
 
@@ -18,7 +21,12 @@ def configure(desktop):
     #desktop.data_path = os.path.join( getProfilePath(), "Dropbox/cmemo" )
 
 
+# メモウインドウの設定処理
 def configure_MemoWindow(window):
-    
-    #print( "configure_MemoWindow", window )
     pass
+
+
+# リストウインドウの設定処理
+def configure_ListWindow(window):
+    pass
+
