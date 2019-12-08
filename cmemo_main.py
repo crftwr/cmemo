@@ -76,6 +76,9 @@ desktop.startup()
 
 desktop.messageLoop()
 
+ckit.JobQueue.cancelAll()
+ckit.JobQueue.joinAll()
+
 desktop.saveState()
 
 desktop.destroy()

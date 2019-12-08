@@ -29,7 +29,7 @@ if len(args)>0:
 
 #-------------------------------------------
 
-PYTHON_DIR = "c:/Python36"
+PYTHON_DIR = "c:/Python38"
 
 PYTHON = PYTHON_DIR + "/python.exe"
 
@@ -42,7 +42,7 @@ ARCHIVE_NAME = "cmemo_%s.zip" % VERSION
 DIST_FILES = {
     "cmemo.exe" :           "cmemo/cmemo.exe",
     "lib" :                 "cmemo/lib",
-    "python36.dll" :        "cmemo/python36.dll",
+    "python38.dll" :        "cmemo/python38.dll",
     "_config.py" :          "cmemo/_config.py",
     "readme.txt" :          "cmemo/readme.txt",
     "theme/black" :         "cmemo/theme/black",
@@ -122,7 +122,7 @@ def target_all():
 def target_compile():
 
     # compile python source files
-    compilePythonRecursively( "c:/Python36/Lib", "build/Lib", 
+    compilePythonRecursively( "c:/Python38/Lib", "build/Lib", 
         directory_black_list = [
             "site-packages",
             "test",
@@ -130,7 +130,7 @@ def target_compile():
             "idlelib",
             ]
         )
-    compilePythonRecursively( "c:/Python36/Lib/site-packages/PIL", "build/Lib/PIL" )
+    compilePythonRecursively( "c:/Python38/Lib/site-packages/PIL", "build/Lib/PIL" )
     compilePythonRecursively( "../ckit", "build/Lib/ckit" )
     compilePythonRecursively( "../pyauto", "build/Lib/pyauto" )
     compilePythonRecursively( ".", "build/Lib", 
@@ -151,9 +151,9 @@ def target_copy():
 
     rmtree("lib")
 
-    shutil.copy( "c:/Python36/python36.dll", "python36.dll" )
+    shutil.copy( "c:/Python38/python38.dll", "python38.dll" )
 
-    shutil.copytree( "c:/Python36/DLLs", "lib", 
+    shutil.copytree( "c:/Python38/DLLs", "lib", 
         ignore=shutil.ignore_patterns(
             "tcl*.*",
             "tk*.*",
@@ -168,7 +168,7 @@ def target_copy():
             )
         )
 
-    shutil.copy( "c:/Python36/Lib/site-packages/PIL/_imaging.cp36-win32.pyd", "lib/_imaging.pyd" )
+    shutil.copy( "c:/Python38/Lib/site-packages/PIL/_imaging.cp38-win32.pyd", "lib/_imaging.pyd" )
 
     shutil.copy( "../ckit/ckitcore.pyd", "lib/ckitcore.pyd" )
     shutil.copy( "../pyauto/pyautocore.pyd", "lib/pyautocore.pyd" )

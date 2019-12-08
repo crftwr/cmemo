@@ -18,7 +18,7 @@ Debug/
 Release/
 lib/
 cmemo_native.pyd
-python36.dll
+python38.dll
 cmemo_d.pdb
 cmemo_d.exe
 cmemo.vcxproj.user
