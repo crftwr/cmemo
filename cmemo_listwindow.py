@@ -444,6 +444,8 @@ class ListWindow( ckit.TextWindow ):
 ## ポップアップメニューを表示する
 #
 #  @param main_window       MainWindowオブジェクト
+#  @param max_width         メニューウインドウの最大幅 (文字単位)
+#  @param max_height        メニューウインドウの最大高さ (文字単位)
 #  @param title             メニューウインドウのタイトルバーに表示する文字列
 #  @param items             メニューに表示するアイテムのリスト
 #  @param initial_select    初期選択位置
