@@ -57,7 +57,7 @@ class MemoWindow( ckit.TextWindow ):
             width=self.setting["w"],
             height=self.setting["h"],
             origin= ORIGIN_X_LEFT | ORIGIN_Y_TOP,
-            parent_window=desktop,
+            font = desktop.getFont(),
             show = False,
             resizable = False,
             title_bar = False,
