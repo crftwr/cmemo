@@ -61,13 +61,20 @@ class ConsoleWindow(ckit.TextWindow):
         
         self.loadState()
 
+        self.font_name = "MS Gothic"
+        self.font_size = 12
+
+        # ウインドウの左上位置のDPIによってをフォントサイズ決定する
+        dpi_scale = ckit.TextWindow.getDisplayScalingFromPosition( self.window_normal_x, self.window_normal_y )
+        scaled_font_size = round( self.font_size * dpi_scale )
+        
         ckit.TextWindow.__init__(
             self,
             x = self.window_normal_x,
             y = self.window_normal_y,
             width = self.window_normal_width,
             height = self.window_normal_height,
-            parent_window=desktop,
+            font = ckit.getStockedFont( self.font_name, scaled_font_size ),
             bg_color = (0,0,0),
             border_size = 2,
             title_bar = True,
@@ -78,6 +85,7 @@ class ConsoleWindow(ckit.TextWindow):
             close_handler = self._onClose,
             move_handler = self._onMove,
             size_handler = self._onSize,
+            dpi_handler = self._onDpi,
             keydown_handler = self._onKeyDown,
             #char_handler = self._onChar,
 
@@ -91,6 +99,11 @@ class ConsoleWindow(ckit.TextWindow):
             mousemove_handler = self._onMouseMove,
             mousewheel_handler= self._onMouseWheel,
             )
+
+        # モニター境界付近でウインドウが作成された場合を考慮して、DPIを再確認する
+        dpi_scale2 = self.getDisplayScaling()
+        if dpi_scale2 != dpi_scale:
+            self._updateFont( x_center = True )
 
         self.plane_scrollbar0 = ckit.ThemePlane3x3( self, 'scrollbar0.png', 2 )
         self.plane_scrollbar1 = ckit.ThemePlane3x3( self, 'scrollbar1.png', 1 )
@@ -137,6 +150,24 @@ class ConsoleWindow(ckit.TextWindow):
             self.window_normal_height = height
 
         self.paint()
+
+    def _updateFont( self, x_center ):
+        
+        scale = self.getDisplayScaling()
+        scaled_font_size = round( self.font_size * scale )
+
+        font = ckit.getStockedFont(self.font_name, scaled_font_size)
+        ckit.TextWindow.setFontFromFontObject( self, font )
+
+        window_rect = self.getWindowRect()
+        
+        if x_center:
+            self.setPosSize( (window_rect[0] + window_rect[2]) // 2, window_rect[1], self.width(), self.height(), ORIGIN_X_CENTER | ORIGIN_Y_TOP )
+        else:
+            self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
+
+    def _onDpi( self, scale ):
+        self._updateFont( x_center = True )
 
     def _onKeyDown( self, vk, mod ):
         
@@ -411,10 +442,12 @@ class ConsoleWindow(ckit.TextWindow):
 
     #--------------------------------------------------------------------------
     
-    def setFontFromTextWindow( self, window ):
-        ckit.TextWindow.setFontFromTextWindow( self, window )
-        window_rect = self.getWindowRect()
-        self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
+    def setFont( self, name, size ):
+
+        self.font_name = name
+        self.font_size = size
+        
+        self._updateFont( x_center = False )
 
     #--------------------------------------------------------------------------
     # 描画

@@ -50,6 +50,13 @@ class MemoWindow( ckit.TextWindow ):
         except:
             new_memo = True
     
+        self.font_name = "MS Gothic"
+        self.font_size = 12
+
+        # ウインドウの左上位置のDPIによってをフォントサイズ決定する
+        dpi_scale = ckit.TextWindow.getDisplayScalingFromPosition( self.setting["x"], self.setting["y"] )
+        scaled_font_size = round( self.font_size * dpi_scale )
+
         ckit.TextWindow.__init__(
             self,
             x=self.setting["x"],
@@ -57,7 +64,7 @@ class MemoWindow( ckit.TextWindow ):
             width=self.setting["w"],
             height=self.setting["h"],
             origin= ORIGIN_X_LEFT | ORIGIN_Y_TOP,
-            font = desktop.getFont(),
+            font = ckit.getStockedFont( self.font_name, scaled_font_size ),
             show = False,
             resizable = False,
             title_bar = False,
@@ -70,6 +77,7 @@ class MemoWindow( ckit.TextWindow ):
             activate_handler = self._onActivate,
             close_handler = self.onClose,
             size_handler = self._onSize,
+            dpi_handler = self._onDpi,
             keydown_handler = self.onKeyDown,
             lbuttondown_handler = self._onLeftButtonDown,
             rbuttondown_handler = self._onRightButtonDown,
@@ -77,6 +85,11 @@ class MemoWindow( ckit.TextWindow ):
             lbuttondoubleclick_handler = self._onLeftButtonDoubleClick,
             nchittest_handler = self._onNcHitTest,
             )
+
+        # モニター境界付近でウインドウが作成された場合を考慮して、DPIを再確認する
+        dpi_scale2 = self.getDisplayScaling()
+        if dpi_scale2 != dpi_scale:
+            self._updateFont( x_center = True )
 
         if new_memo:
             window_rect = self.getWindowRect()
@@ -168,6 +181,24 @@ class MemoWindow( ckit.TextWindow ):
     def _onSize( self, width, height ):
         self.paint()
 
+    def _updateFont( self, x_center ):
+        
+        scale = self.getDisplayScaling()
+        scaled_font_size = round( self.font_size * scale )
+
+        font = ckit.getStockedFont(self.font_name, scaled_font_size)
+        ckit.TextWindow.setFontFromFontObject( self, font )
+
+        window_rect = self.getWindowRect()
+        
+        if x_center:
+            self.setPosSize( (window_rect[0] + window_rect[2]) // 2, window_rect[1], self.width(), self.height(), ORIGIN_X_CENTER | ORIGIN_Y_TOP )
+        else:
+            self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
+
+    def _onDpi( self, scale ):
+        self._updateFont( x_center = True )
+
     def _onLeftButtonDown( self, x, y, mod ):
         self.drag(x,y);
         
@@ -241,10 +272,12 @@ class MemoWindow( ckit.TextWindow ):
 
     #--------------------------------------------------------------------------
     
-    def setFontFromTextWindow( self, window ):
-        ckit.TextWindow.setFontFromTextWindow( self, window )
-        window_rect = self.getWindowRect()
-        self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
+    def setFont( self, name, size ):
+
+        self.font_name = name
+        self.font_size = size
+        
+        self._updateFont( x_center = False )
 
     #--------------------------------------------------------------------------
 
