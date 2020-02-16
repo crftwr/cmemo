@@ -85,12 +85,7 @@ class MemoWindow( ckit.TextWindow ):
             lbuttondoubleclick_handler = self._onLeftButtonDoubleClick,
             nchittest_handler = self._onNcHitTest,
             )
-
-        # モニター境界付近でウインドウが作成された場合を考慮して、DPIを再確認する
-        dpi_scale2 = self.getDisplayScaling()
-        if dpi_scale2 != dpi_scale:
-            self._updateFont( x_center = True )
-
+        
         if new_memo:
             window_rect = self.getWindowRect()
             x, y = desktop.findSpace( ( window_rect[2]-window_rect[0]+4, window_rect[3]-window_rect[1]+4 ) )
@@ -136,6 +131,10 @@ class MemoWindow( ckit.TextWindow ):
 
         self.load( adjust_size=new_memo )
 
+        # モニター境界付近でウインドウが作成された場合を考慮して、DPIを再確認する
+        dpi_scale2 = self.getDisplayScaling()
+        if dpi_scale2 != dpi_scale:
+            self._updateFont( window_position = "top_center_align" )
 
     def destroy(self):
 
@@ -181,23 +180,82 @@ class MemoWindow( ckit.TextWindow ):
     def _onSize( self, width, height ):
         self.paint()
 
-    def _updateFont( self, x_center ):
+    def _crossingMonitors( self, rect ):
+
+        crossing_monitors = []
+
+        for monitor in pyauto.Window.getMonitorInfo():
+
+            monitor_rect = monitor[1]
+            
+            if (rect[0]<=monitor_rect[2] and
+                rect[2]>=monitor_rect[0] and
+                rect[1]<=monitor_rect[3] and
+                rect[3]>=monitor_rect[1]):
+                crossing_monitors.append(monitor)
+        
+        return crossing_monitors
+
+    def _makeVisibleInMonitorRect( self, monitor_rect ):
+    
+        window_rect = self.getWindowRect()
+        x = window_rect[0]
+        y = window_rect[1]
+        w = window_rect[2] - window_rect[0]
+        h = window_rect[3] - window_rect[1]
+
+        x = min( x, monitor_rect[2] - int( w / 4 ) )
+        x = max( x, monitor_rect[0] - int( w * 3 / 4 ) )
+        y = min( y, monitor_rect[3] - int( h / 4 ) )
+        y = max( y, monitor_rect[1] - int( h * 3 / 4 ) )
+
+        if x!=window_rect[0] or y!=window_rect[1]:
+            self.setPosSize( x, y, self.width(), self.height(), 0 )
+
+    def _updateFont( self, window_position = "top_center_align" ):
         
         scale = self.getDisplayScaling()
         scaled_font_size = round( self.font_size * scale )
 
         font = ckit.getStockedFont(self.font_name, scaled_font_size)
-        ckit.TextWindow.setFontFromFontObject( self, font )
 
         window_rect = self.getWindowRect()
-        
-        if x_center:
+
+        if window_position == "top_center_align":
+
+            # ウインドウの上端中央位置を基準にする
+            ckit.TextWindow.setFontFromFontObject( self, font )
             self.setPosSize( (window_rect[0] + window_rect[2]) // 2, window_rect[1], self.width(), self.height(), ORIGIN_X_CENTER | ORIGIN_Y_TOP )
-        else:
-            self.setPosSize( window_rect[0], window_rect[1], self.width(), self.height(), 0 )
+
+        elif window_position == "dpi_scaling":
+
+            old_char_size = self.getCharSize()
+            ckit.TextWindow.setFontFromFontObject( self, font )
+            new_char_size = self.getCharSize()
+            scale_for_position = ( new_char_size[0]/old_char_size[0], new_char_size[1]/old_char_size[1] )
+
+            # フォントサイズの変化に応じてモニター中での位置を調整する
+            crossing_monitors = self._crossingMonitors(window_rect)
+            if len(crossing_monitors)==1:
+            
+                monitor_rect = crossing_monitors[0][1]
+                scaled_pos = ( int( (window_rect[0] - monitor_rect[0]) * scale_for_position[0] + monitor_rect[0] ), int( (window_rect[1] - monitor_rect[1]) * scale_for_position[1] + monitor_rect[1] ) )
+                self.setPosSize( scaled_pos[0], scaled_pos[1], self.width(), self.height(), 0 )
+
+                # モニターの表示範囲内に部分的に入るように調整する
+                self._makeVisibleInMonitorRect( crossing_monitors[0][1] )
 
     def _onDpi( self, scale ):
-        self._updateFont( x_center = True )
+
+        window_rect = self.getWindowRect()
+        crossing_monitors = self._crossingMonitors(window_rect)
+
+        if len(crossing_monitors)>1:
+            # 複数のモニターにまたがっている場合は、ウインドウ上端センターを基準にウインドウサイズを変更する
+            self._updateFont( window_position = "top_center_align" )
+        else:
+            # 複数のモニターにまたがっていない場合は、モニター中でのウインドウ位置をフォントサイズの変化に応じて調整する
+            self._updateFont( window_position = "dpi_scaling" )
 
     def _onLeftButtonDown( self, x, y, mod ):
         self.drag(x,y);
@@ -277,7 +335,7 @@ class MemoWindow( ckit.TextWindow ):
         self.font_name = name
         self.font_size = size
         
-        self._updateFont( x_center = False )
+        self._updateFont( window_position = "top_center_align" )
 
     #--------------------------------------------------------------------------
 

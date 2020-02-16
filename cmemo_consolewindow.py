@@ -100,11 +100,6 @@ class ConsoleWindow(ckit.TextWindow):
             mousewheel_handler= self._onMouseWheel,
             )
 
-        # モニター境界付近でウインドウが作成された場合を考慮して、DPIを再確認する
-        dpi_scale2 = self.getDisplayScaling()
-        if dpi_scale2 != dpi_scale:
-            self._updateFont( x_center = True )
-
         self.plane_scrollbar0 = ckit.ThemePlane3x3( self, 'scrollbar0.png', 2 )
         self.plane_scrollbar1 = ckit.ThemePlane3x3( self, 'scrollbar1.png', 1 )
 
@@ -121,6 +116,11 @@ class ConsoleWindow(ckit.TextWindow):
         self.initialized = True
     
         self.paint()
+
+        # モニター境界付近でウインドウが作成された場合を考慮して、DPIを再確認する
+        dpi_scale2 = self.getDisplayScaling()
+        if dpi_scale2 != dpi_scale:
+            self._updateFont( x_center = True )
 
     #--------------------------------------------------------------------------
     # 領域
