@@ -26,11 +26,11 @@ import cmemo_misc
 
 ## 複数のメモウインドウの管理を行うクラス
 #
-class Desktop(ckit.TextWindow):
+class Desktop(ckit.Window):
     
     def __init__( self, config_filename, debug, profile ):
 
-        ckit.TextWindow.__init__(
+        ckit.Window.__init__(
             self,
             x = 0,
             y = 0,
@@ -51,6 +51,9 @@ class Desktop(ckit.TextWindow):
         self.debug = debug                      # デバッグモード
         self.profile = profile                  # プロファイルモード
         
+        self.font_name = "MS Gothic"
+        self.font_size = 12
+
         self.memowindow_table = {}
         
         self.creating_memowindow = False
@@ -83,7 +86,7 @@ class Desktop(ckit.TextWindow):
 
         self.console_window.destroy()
 
-        ckit.TextWindow.destroy(self)
+        ckit.Window.destroy(self)
 
     def _onEndSession(self):
         self.saveState()
@@ -99,11 +102,14 @@ class Desktop(ckit.TextWindow):
     #  @param size  フォントサイズ
     #
     def setFont( self, name, size ):
-        ckit.TextWindow.setFont( self, name, size )
-        self.console_window.setFontFromTextWindow(self)
+        
+        self.font_name = name
+        self.font_size = size
+        
+        self.console_window.setFont(name, size)
 
         for memowindow in self.memowindow_table.values():
-            memowindow.setFontFromTextWindow(self)
+            memowindow.setFont(name, size)
 
     ## ユーザ入力権を獲得する
     #
@@ -303,7 +309,7 @@ class Desktop(ckit.TextWindow):
 
     def setMenuHotKey( self, vk, mod ):
         self.killHotKey( self._popupHotKeyMenu )
-        ckit.TextWindow.setHotKey( self, vk, mod, self._popupHotKeyMenu )
+        ckit.Window.setHotKey( self, vk, mod, self._popupHotKeyMenu )
 
     def createMemoWindowForNewMemoFile(self):
         data_path = os.path.join( self.data_path, 'data' )
@@ -399,7 +405,13 @@ class Desktop(ckit.TextWindow):
                 return ""
 
             pos = pyauto.Input.getCursorPos()
-            list_window = cmemo_listwindow.ListWindow( pos[0], pos[1], 5, 1, max_width, 16, self, False, "メモリスト", items, initial_select=0, keydown_hook=onKeyDown, onekey_search=False, statusbar_handler=onStatusMessage )
+
+            # リストウインドウの左上位置のDPIによってをフォントサイズ決定する
+            dpi_scale = ckit.Window.getDisplayScalingFromPosition( pos[0], pos[1] )
+            scaled_font_size = round( self.font_size * dpi_scale )
+            font = ckit.getStockedFont( self.font_name, scaled_font_size )
+
+            list_window = cmemo_listwindow.ListWindow( pos[0], pos[1], 5, 1, max_width, 16, self, font, False, "メモリスト", items, initial_select=0, keydown_hook=onKeyDown, onekey_search=False, statusbar_handler=onStatusMessage )
             cmemo_misc.adjustWindowPosition( list_window, pos )
             list_window.show(True)
             self.enable(False)
